@@ -59,6 +59,7 @@
                 <el-descriptions-item label=图片>
                     <el-image
                             v-for="item in UserProcessData.img"
+                            :key="item"
                             style="width: 100px; height: 100px"
                             :src="item"
                             :preview-src-list="UserProcessData.img">

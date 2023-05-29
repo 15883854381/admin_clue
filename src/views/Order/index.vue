@@ -21,7 +21,7 @@
                 </el-table>
             </div>
             <div slot="footer" style="text-align: center">
-                <el-pagination  @current-change="getChange" background
+                <el-pagination @current-change="getChange" background
                                layout="prev, pager, next" :total="page.pageCount"
                                :page-size="page.pageSize"></el-pagination>
             </div>
@@ -31,7 +31,7 @@
                 title="订单详情"
                 :visible.sync="dialog.orderbox"
                 width="60%"
-                :modal-append-to-body="false"
+                :append-to-body="true"
         >
             <el-descriptions direction="horizontal" :column="2" border>
                 <el-descriptions-item label="用户昵称">{{ data.itemData.nickname }}</el-descriptions-item>
@@ -45,7 +45,7 @@
                 <el-descriptions-item label="订单状态">
                     <el-tag size="small" :type="data.itemData.type">{{ data.itemData.title }}</el-tag>
                 </el-descriptions-item>
-                <el-descriptions-item  label="线索类型">
+                <el-descriptions-item label="线索类型">
                     <el-tag>{{ data.itemData.cart_type === 1 ? '新车' : '二手车' }}</el-tag>
                 </el-descriptions-item>
                 <el-descriptions-item v-if="data.itemData.flat === 5" label="审核状态">
@@ -113,7 +113,6 @@
                             <el-tag v-if="scope.row.status === '0'" type="danger">未接通</el-tag>
                         </template>
                     </el-table-column>
-
                 </el-table>
             </template>
 
@@ -159,6 +158,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 this.EditOrderFlatData({index: e.index, id: e.id, flat: this.flat})
+                this.flat = ''
             }).catch(() => {
                 this.$message({
                     type: 'info',
