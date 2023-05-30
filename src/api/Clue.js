@@ -22,3 +22,30 @@ export function ClueCount(data){
         data
     })
 }
+
+// 批量上传
+export function batchUpData(data){
+    return request({
+        method:'post',
+        url:'/AdminClue/batchUp',
+        data
+    })
+}
+
+// 批量上传 文件
+export function SelectUpData(data){
+    return request({
+        method:'post',
+        url:'/AdminClue/SelectUpdata',
+        data
+    })
+}
+
+// 批量上传 数据
+export function queryBatchData(data){
+    return request({
+        method:'post',
+        url:'/AdminClue/queryBatch',
+        data
+    })
+}

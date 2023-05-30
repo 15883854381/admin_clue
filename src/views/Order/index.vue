@@ -84,22 +84,8 @@
                             width="180"
                     >
                     </el-table-column>
-                    <!--                    <el-table-column-->
-                    <!--                            prop="begin_time"-->
-                    <!--                            label="通话开始时间"-->
-                    <!--                            >-->
-                    <!--                    </el-table-column>-->
-                    <!--                    <el-table-column-->
-                    <!--                            prop="end_time"-->
-                    <!--                            label="通话结束时间"-->
-                    <!--                            >-->
-                    <!--                    </el-table-column>-->
 
                     <el-table-column label="录音">
-                        <!--                        <template slot-scope="scope">-->
-                        <!--                            <el-tag v-if="scope.row.status === '1'">接通</el-tag>-->
-                        <!--                            <el-tag v-if="scope.row.status === '0'" type="danger">接通</el-tag>-->
-                        <!--                        </template>-->
                         <template slot-scope="scope" v-if="scope.row.record_file_url">
                             <audio controls>
                                 <source :src="scope.row.record_file_url" type="audio/wav">
@@ -121,6 +107,9 @@
                 <el-button @click="dialog.orderbox = false">取 消</el-button>
             </span>
         </el-dialog>
+
+
+
     </div>
 </template>
 
@@ -132,7 +121,7 @@ export default {
     data() {
         return {
             taheight: window.innerHeight - 210,
-            flat: ''
+            flat: '',
         }
     },
     mounted() {
@@ -169,8 +158,6 @@ export default {
         getChange(e) {
             this.page.pageNumber = e
             this.OrderData(this.page)
-
-
         }
     },
     computed: {

@@ -15,7 +15,7 @@
                     <el-button type="primary">查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">批量上传</el-button>
+                    <el-button type="primary" @click="batchUp">批量上传</el-button>
                     <el-button type="primary">批量下载</el-button>
                 </el-form-item>
             </el-form>
@@ -77,7 +77,7 @@
 
                 <el-descriptions-item :span="4" label="线索类型">
                     <el-tag>{{ itemData.cart_type === 1 ? '新车' : '二手车' }}</el-tag>
-                    </el-descriptions-item>
+                </el-descriptions-item>
                 <el-descriptions-item :span="4" label="修改状态">
                     <el-radio-group :value="itemData.flag" @input="FlafRadio">
                         <el-radio :label="1">通过审核</el-radio>
@@ -92,6 +92,111 @@
             <el-button @click="centerDialogVisible = false">关 闭</el-button>
   </span>
         </el-dialog>
+        <!--        批量上传得界面-->
+        <el-dialog
+                title="批量上传"
+                append-to-body
+                :visible.sync="dialog.excel_box"
+                width="400px">
+            <el-upload
+                    :on-change="ChangeUpdateExcel"
+                    class="upload-demo"
+                    ref="uploadExcel"
+                    drag
+                    action="#"
+                    :limit="1"
+                    :auto-upload="false"
+                    multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+            <el-dialog
+                    title="excel数据"
+                    append-to-body
+                    :visible.sync="dialog.Data_box"
+                    width="70%">
+
+                <el-table
+                        :data="UpDataArray"
+                        height="500"
+                        border
+                        style="width: 100%"
+                        :row-class-name="tableRowClassName"
+                        @selection-change="handleSelectionChange"
+                >
+                    <el-table-column
+                            type="selection"
+                            :selectable="selected"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            prop="user_name"
+                            label="用户名"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="cart_type"
+                            label="性别">
+                        <template slot-scope="scope">
+                            <el-tag :type="scope.row.cart_type === 1?'success':''">
+                                {{ scope.row.sex === 1 ? '男' : '女' }}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="phone_number"
+                            label="手机号码"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="sales"
+                            label="售卖次数">
+                    </el-table-column>
+                    <el-table-column
+                            prop="unitPrice_1"
+                            label="价格【1】">
+                    </el-table-column>
+                    <el-table-column
+                            prop="unitPrice_2"
+                            label="价格【2】">
+                    </el-table-column>
+                    <el-table-column
+                            prop="unitPrice_3"
+                            label="价格【3】">
+                    </el-table-column>
+                    <el-table-column
+                            prop="PhoneBelongingplace"
+                            label="号码归属地">
+                    </el-table-column>
+                    <el-table-column
+                            prop="cart_type"
+                            label="车辆类型">
+                        <template slot-scope="scope">
+                            <el-tag :type="scope.row.cart_type === 1?'success':''">
+                                {{ scope.row.cart_type === 1 ? '新车' : '二手车' }}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="error"
+                            show-overflow-tooltip
+                            label="提示信息">
+                    </el-table-column>
+                </el-table>
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialog.Data_box = false">取 消</el-button>
+                    <el-button type="primary" @click="QueryAddData">确认添加</el-button>
+                </span>
+            </el-dialog>
+            <span slot="footer" class="dialog-footer">
+                 <el-button @click="lookHistory">查看历史</el-button>
+                <el-button @click="dialog.excel_box = false">取 消</el-button>
+                <el-button type="primary" @click="queryUpdata">确认上传</el-button>
+            </span>
+        </el-dialog>
+        <!-- 获取缓存得到数据        -->
 
     </div>
 </template>
@@ -99,6 +204,7 @@
 <script>
 import Content from "@/components/Content/index"
 import {mapState, mapActions} from "vuex";
+import fa from "element-ui/src/locale/lang/fa";
 
 export default {
     data() {
@@ -106,7 +212,9 @@ export default {
             centerDialogVisible: false,
             taheight: window.innerHeight - 250,
             itemData: {},
-            flat: '-1'
+            flat: '-1',
+            Execelfile: {},
+            queryMapdata: [],
         }
     },
     components: {
@@ -114,12 +222,13 @@ export default {
     },
 
     methods: {
-        ...mapActions('clue', ['CLue_list', 'EditClueFlag', 'ClueCountData']),
+        ...mapActions('clue', ['CLue_list', 'EditClueFlag', 'ClueCountData', 'UpdateExcel', 'SelectUpDatas', 'queryBatch']),
         getItemData(e) {
             this.itemData = e
             this.centerDialogVisible = true;
 
         },
+        // 修改审核状态
         FlafRadio(e) {
             let data = {
                 clue_id: this.itemData.clue_id,
@@ -132,10 +241,40 @@ export default {
                 }
             })
         },
+        // 查看历史
+        lookHistory() {
+            this.SelectUpDatas()
+            this.dialog.Data_box = true;
+        },
+        // 确认上传 文件
+        queryUpdata() {
+            if (this.Execelfile?.name === undefined) {
+                this.$message({
+                    type: 'error',
+                    message: '请先上传excel表格'
+                })
+                return false;
+            }
+            this.UpdateExcel(this.Execelfile).then(() => {
+                this.$refs.uploadExcel.clearFiles()
+            })
+
+        },
+        // 确认上传 数据
+        QueryAddData() {
+            this.queryBatch(this.queryMapdata)
+        },
+
+
         getChange(e) {
             this.page.pageNumber = e
             this.CLue_list(this.page)
         },
+        // 监听上传文件
+        ChangeUpdateExcel(e) {
+            this.Execelfile = e
+        },
+        // 查询状态
         getflat(e) {
             this.flat = e
             if (e === '-1') {
@@ -143,15 +282,46 @@ export default {
             } else {
                 this.CLue_list({flag: e})
             }
+        },
+        batchUp() {
+            this.dialog.excel_box = true;
+        },
+        // 查看历史  获取选中的数据
+        handleSelectionChange(data) {
+            this.queryMapdata = data.map((e) => {
+                return e.clue_id
+            })
+        },
+        // 禁用table 多选
+        selected(row, index) {
+            if (row.error_type === 1) {
+                return false //不可勾选
+            } else {
+                return true; //可勾选
+            }
+        },
+        // 状态
+        tableRowClassName({row}) {
+            console.log('别竞争', row)
+            if (row.error_type === 1) {
+                return 'warning-row';
+            } else
+                return '';
         }
-    },
+
+
+    }
+    ,
     mounted() {
         this.CLue_list()
-        // this.ClueCountData()
-    },
+
+    }
+    ,
     computed: {
-        ...mapState('clue', ['clue_list', 'Editstate', 'page'])
-    },
+        ...
+            mapState('clue', ['clue_list', 'Editstate', 'page', 'dialog', 'UpDataArray'])
+    }
+    ,
 }
 </script>
 
@@ -180,5 +350,9 @@ export default {
     min-height: calc(100vh - 126px);
     margin: 20px 10px;
     padding: 10px;
+}
+
+.el-table .warning-row {
+    background: #F56C6C;
 }
 </style>
