@@ -9,7 +9,7 @@ import './assets/fonts/iconfont.css'
 Vue.use(ElementUI);
 
 import animated from 'animate.css'
-Vue.use(animated)
+// Vue.use(animated)
 
 
 

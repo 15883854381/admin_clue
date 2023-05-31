@@ -2,7 +2,7 @@ import axios from "axios"
 import router from "@/router";
 
 const config = {
-    baseURL: "http://h.199909.xyz",
+    baseURL: process.env.NODE_ENV === "production" ? `http://s.199909.xyz/` : "http://h.199909.xyz/",  // 线上 or 开发,
     timeout: 60 * 1000,
     headers: {
         "token": localStorage.getItem('token')
