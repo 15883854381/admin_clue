@@ -1,5 +1,13 @@
 // 导入登录接口
-import {batchUpData, CLue_list, ClueCount, EditClueFlag, queryBatchData, SelectUpData} from "@/api/Clue";
+import {
+    batchUpData,
+    Clue_allocationData,
+    CLue_list, Clue_list_AuditData,
+    ClueCount,
+    EditClueFlag,
+    queryBatchData,
+    SelectUpData
+} from "@/api/Clue";
 import {Message} from 'element-ui'
 import fa from "element-ui/src/locale/lang/fa";
 
@@ -58,8 +66,6 @@ export default {
                     store.state.dialog.Data_box = true
                     store.dispatch('SelectUpDatas')
                 }
-
-
             })
         },
         SelectUpDatas(store, context) {
@@ -88,6 +94,31 @@ export default {
                 }
             })
         },
+        // 确认分配
+        a_queryAllocation(store, context) {
+            Clue_allocationData({userid: store.state.distribution_form.staff_list.toString()}).then(res => {
+                let {code, mes} = res.data
+                Message({
+                    type: code === 200 ? 'success' : 'error',
+                    message: mes
+                })
+                if (code === 200) {
+                    store.state.dialog.Clue_distribution = false
+                }
+            })
+        },
+        // 线索列表
+        Clue_list_Audit(store) {
+            Clue_list_AuditData().then(res => {
+                let {code, data, mes} = res.data
+                if (code === 200) {
+                    store.commit("Clue_list_Audit", data)
+                }
+            })
+        },
+        // 线索详情
+
+
     },
 
     mutations: {
@@ -102,7 +133,12 @@ export default {
             state.UpDataArray = val
 
 
+        },
+        Clue_list_Audit(state, val) {
+            state.outbound_list = val
         }
+
+
     },
     state: {
         clue_list: [],
@@ -115,8 +151,17 @@ export default {
         dialog: {
             Data_box: false,
             excel_box: false,
+            Clue_distribution: false,// 分配线索的 dialog
+            ClueEditbox:false,
         },
-        UpDataArray: []
+        distribution_form: {
+            staff_list: [],
+        }, // 分配表单
+        UpDataArray: [],
+        outbound_list:[],
+        form_clue:{
+
+        },
     },
     getters: {},
 }

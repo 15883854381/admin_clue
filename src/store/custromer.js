@@ -95,7 +95,7 @@ export default {
         updata: {
             nickname: '',
             WatchCode: '',
-            phoneNumber: '',
+            phone_number: '',
             region: '',
             flag: true,
         },

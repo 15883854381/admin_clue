@@ -15,13 +15,19 @@
                     <el-button type="primary">查询</el-button>
                 </el-form-item>
                 <el-form-item>
+                    <el-button type="primary" @click="dialog.Clue_distribution= true">线索分配</el-button>
+                </el-form-item>
+                <el-form-item>
                     <el-button type="primary" @click="batchUp">批量上传</el-button>
                     <el-button type="primary">批量下载</el-button>
                 </el-form-item>
             </el-form>
             <div style="width: 100%">
                 <el-table :data="clue_list" :height="taheight" style="width: 100%;" @row-click="getItemData">
-
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
                     <el-table-column prop="nickname" show-overflow-tooltip label="发布者"></el-table-column>
                     <el-table-column prop="user_name" label="称呼"></el-table-column>
                     <el-table-column prop="brand" :show-overflow-tooltip="true" label="品牌"></el-table-column>
@@ -56,7 +62,7 @@
             </div>
         </Content>
 
-
+        <!--线索详情-->
         <el-dialog
                 title="线索信息"
                 :visible.sync="centerDialogVisible"
@@ -92,7 +98,7 @@
             <el-button @click="centerDialogVisible = false">关 闭</el-button>
   </span>
         </el-dialog>
-        <!--        批量上传得界面-->
+        <!--批量上传得界面-->
         <el-dialog
                 title="批量上传"
                 append-to-body
@@ -196,7 +202,37 @@
                 <el-button type="primary" @click="queryUpdata">确认上传</el-button>
             </span>
         </el-dialog>
-        <!-- 获取缓存得到数据        -->
+        <!--线索分配-->
+        <el-dialog
+                title="线索分配"
+                :visible.sync="dialog.Clue_distribution"
+                append-to-body
+                width="30%">
+            <el-form :inline="true" class="demo-form-inline">
+                <el-form-item label="线索均分">
+                    <el-select
+                            @change="StaffChange"
+                            v-model="distribution_form.staff_list"
+                            multiple
+                            collapse-tags
+                            style="margin-left: 20px;"
+                            placeholder="请选择">
+                        <el-option
+                                v-for="item in $store.state.personnel.support_staff_list"
+                                :key="item.id"
+                                :label="item.username"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialog.Clue_distribution = false">取 消</el-button>
+                <el-button type="primary" @click="queryAllocation">确 定</el-button>
+            </span>
+        </el-dialog>
 
     </div>
 </template>
@@ -222,7 +258,8 @@ export default {
     },
 
     methods: {
-        ...mapActions('clue', ['CLue_list', 'EditClueFlag', 'ClueCountData', 'UpdateExcel', 'SelectUpDatas', 'queryBatch']),
+
+
         getItemData(e) {
             this.itemData = e
             this.centerDialogVisible = true;
@@ -302,24 +339,31 @@ export default {
         },
         // 状态
         tableRowClassName({row}) {
-            console.log('别竞争', row)
             if (row.error_type === 1) {
                 return 'warning-row';
             } else
                 return '';
-        }
-
-
+        },
+        // 监听选中客服人员列表
+        StaffChange(e) {
+            console.log(e)
+        },
+        // 确认分配
+        queryAllocation() {
+            this.a_queryAllocation()
+        },
+        ...mapActions('clue', ['CLue_list', 'EditClueFlag', 'ClueCountData', 'UpdateExcel', 'SelectUpDatas', 'queryBatch', 'a_queryAllocation']),
+        ...mapActions('personnel', ['supportStaff'])
     }
     ,
     mounted() {
         this.CLue_list()
-
+        this.supportStaff()
     }
     ,
     computed: {
         ...
-            mapState('clue', ['clue_list', 'Editstate', 'page', 'dialog', 'UpDataArray'])
+            mapState('clue', ['clue_list', 'Editstate', 'page', 'dialog', 'UpDataArray', 'distribution_form'])
     }
     ,
 }

@@ -30,7 +30,7 @@ export function sendCode(data) {
  */
 export function login(data) {
     return request({
-        url: '/User/getcode',
+        url: '/AdminLogin/login',
         method: 'post',
         data
     })
@@ -74,6 +74,61 @@ export function getEnevtUserProcessData(data) {
     })
 }
 
+// 获取所有的人员数据
+export function SelectAllAdminUserData() {
+    return request({
+        url: '/AdminUser/SelectAllAdminUser',
+        method: 'post',
+    })
+}
+
+// 删除人员
+export function deleteAdminUserData(data) {
+    return request({
+        url: '/AdminUser/deleteAdminUser',
+        method: 'post',
+        data
+    })
+}
+
+// 新增人员
+export function addAdminUserData(data) {
+    return request({
+        url: '/AdminUser/addAdminUser',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}
+
+// 查询客服人员的详情数据
+export function SelectCustomerUserData(data) {
+    return request({
+        url: '/AdminUser/SelectCustomerUser',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}
 
 
+// 修改人员数据
+export function EditAdminUserData(data) {
+    return request({
+        url: '/AdminUser/EditAdminUser',
+        method: 'post',
+        data,
+    })
+}
 
+// 获取所有客服列表
+export function supportStaffData(){
+    return request({
+        url:'/AdminUser/supportStaff',
+        method:'post',
+    })
+}

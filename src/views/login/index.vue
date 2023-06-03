@@ -1,43 +1,61 @@
 <template>
     <div class="login-container">
+
+
         <el-form ref="loginForm" class="login-form" auto-complete="on" label-position="left">
+            <el-tabs stretch v-model="loginForm.login_type">
+                <el-tab-pane label="个人/企业" name="1">
+                    <el-form-item prop="phone_number">
+                      <span class="svg-container">
+                          <i class="el-icon-user"></i>
+                      </span>
+                        <el-input size="mini" v-model="loginForm.phone_number" placeholder="手机号"
+                                  name="phone_number" type="text"
+                                  tabindex="1" auto-complete="on"/>
+                    </el-form-item>
 
-            <div class="title-container">
-                <h3 class="login_title">登录</h3>
-            </div>
-
-            <el-form-item prop="username">
-                <span class="svg-container">
-                    <!-- <svg-icon icon-class="user" /> -->
-                    <i class="el-icon-user"></i>
-                </span>
-                <el-input ref="username" size="mini" v-model="loginForm.phone_number" placeholder="手机号"
-                          name="username" type="text"
-                          tabindex="1" auto-complete="on"/>
-            </el-form-item>
-
-            <el-form-item prop="password">
-
-                <el-row :gutter="20">
-                    <el-col :span="2">
+                    <el-form-item prop="password">
+                        <el-row :gutter="20">
+                            <el-col :span="2">
                           <span class="svg-container">
-                    <i class="iconfont el-icon-mima"></i>
-                </span>
-                    </el-col>
-                    <el-col :span="13">
-                        <el-input ref="password" v-model="loginForm.code" placeholder="验证码" name="password"
-                                  type="text"
-                                  maxlength="8"
-                                  tabindex="2" auto-complete="on"/>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-button @click="sendCode" style="height: 52px;margin-left: 2px" type="primary">发送验证码
-                        </el-button>
-                    </el-col>
-                </el-row>
-            </el-form-item>
+                            <i class="iconfont el-icon-mima"></i>
+                          </span>
+                            </el-col>
+                            <el-col :span="13">
+                                <el-input v-model="loginForm.code" placeholder="验证码" name="code"
+                                          type="text"
+                                          maxlength="8"
+                                          tabindex="2" auto-complete="on"/>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-button @click="sendCode" style="height: 52px;margin-left: 2px" type="primary">发送验证码
+                                </el-button>
+                            </el-col>
+                        </el-row>
+                    </el-form-item>
+                </el-tab-pane>
+                <el-tab-pane label="管理员" name="2">
+                    <el-form-item prop="phone_number">
+                      <span class="svg-container">
+                          <i class="el-icon-user"></i>
+                      </span>
+                        <el-input size="mini" v-model="loginForm.phone_number" placeholder="手机号"
+                                  name="phone_number" type="text"
+                                  tabindex="1" auto-complete="on"/>
+                    </el-form-item>
+                    <el-form-item prop="phone_number">
+                       <span class="svg-container">
+                            <i class="iconfont el-icon-mima"></i>
+                          </span>
+                        <el-input placeholder="请输入密码" name="password" v-model="loginForm.password"
+                                  show-password></el-input>
+                    </el-form-item>
 
-            <el-button type="primary" @click.native.prevent="handleLogins" style="width:100%;margin-bottom:30px;">登录
+
+                </el-tab-pane>
+            </el-tabs>
+            <el-button type="primary" @click.native.prevent="handleLogins"
+                       style="width:100%;margin-bottom:30px;">登录
             </el-button>
 
             <div class="tips">
@@ -60,7 +78,9 @@ export default {
             loginForm: {
                 phone_number: '',
                 code: '',
-            }
+                password: '',
+                login_type: '1'
+            },
 
         };
     },
@@ -68,11 +88,14 @@ export default {
     methods: {
         handleLogins() {
             this.$store.dispatch('login/login', this.loginForm).then((res) => {
+                console.log(res)
                 if (res.code === 200) {
                     this.$router.replace('/index')
                 }
             })
         },
+
+
         sendCode() {
             this.$store.dispatch('login/sendCode', this.loginForm)
         }

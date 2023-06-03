@@ -24,7 +24,7 @@ serve.interceptors.request.use(function (config) {
 // 添加响应拦截器
 serve.interceptors.response.use(function (response) {
     // 对响应数据做点什么
-    console.log(response)
+    // console.log(response)
     let {data, mes} = response.data
     if (mes === '登录过期，请重新登录') {
         router.replace('/login')

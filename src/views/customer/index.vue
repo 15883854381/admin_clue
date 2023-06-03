@@ -11,7 +11,7 @@
                                        :src="scope.row.WatchCode"></el-avatar>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="phoneNumber" label="手机号"></el-table-column>
+                    <el-table-column prop="phone_number" label="手机号"></el-table-column>
                     <el-table-column prop="region" label="分配省份"></el-table-column>
                     <el-table-column label="状态">
                         <template slot-scope="scope">
@@ -48,7 +48,7 @@
                     <el-input v-model="updata.nickname"></el-input>
                 </el-form-item>
                 <el-form-item label="手机号码">
-                    <el-input type="number" v-model="updata.phoneNumber"></el-input>
+                    <el-input type="number" v-model="updata.phone_number"></el-input>
                 </el-form-item>
 
                 <el-form-item label="对接省份">
@@ -111,7 +111,6 @@ export default {
         City() {
             City().then(res => {
                 this.CityData = res.data.data
-                console.log(res.data.data)
             })
         }
     }

@@ -172,7 +172,7 @@ export default Vue.extend({
         // 查询文章案例
         SelectCaseData() {
             SelectCase().then(res => {
-                console.log(res)
+                // console.log(res)
                 let {code, data, mes} = res.data
                 if (code === 200) {
                     this.tableData = data
@@ -202,7 +202,7 @@ export default Vue.extend({
         },
         // 预览
         PreviewData(item) {
-            console.log(item)
+            // console.log(item)
             let {row} = item
             this.PreviewContent = row
             this.Preview = true;
