@@ -146,7 +146,7 @@
                             label="性别">
                         <template slot-scope="scope">
                             <el-tag :type="scope.row.cart_type === 1?'success':''">
-                                {{ scope.row.sex === 1 ? '男' : '女' }}
+                                {{ scope.row.sex === 1 ? '男' : scope.row.sex === 0 ? '女' : '' }}
                             </el-tag>
                         </template>
                     </el-table-column>
@@ -173,7 +173,8 @@
                     </el-table-column>
                     <el-table-column
                             prop="PhoneBelongingplace"
-                            label="号码归属地">
+                            label="号码归属地"
+                    >
                     </el-table-column>
                     <el-table-column
                             prop="cart_type"

@@ -44,6 +44,7 @@ export default {
                             message: res.data.mes,
                         });
                         store.dispatch('routerMap')
+                        localStorage.setItem('phone_number', res.data.data.phone_number)
                         localStorage.setItem('token', res.data.data.token)
                     } else {
                         Message({

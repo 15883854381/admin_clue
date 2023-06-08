@@ -88,19 +88,17 @@ export default {
     methods: {
         handleLogins() {
             this.$store.dispatch('login/login', this.loginForm).then((res) => {
-                console.log(res)
                 if (res.code === 200) {
                     this.$router.replace('/index')
                 }
             })
         },
 
-
         sendCode() {
             this.$store.dispatch('login/sendCode', this.loginForm)
         }
-
-
+    },
+    mounted() {
     }
 }
 </script>

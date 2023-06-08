@@ -3,10 +3,10 @@ import {
     batchUpData,
     Clue_allocationData,
     CLue_list, Clue_list_AuditData,
-    ClueCount,
+    ClueCount, EditClueDataData,
     EditClueFlag,
     queryBatchData,
-    SelectUpData
+    SelectUpData, singularTagsData
 } from "@/api/Clue";
 import {Message} from 'element-ui'
 import fa from "element-ui/src/locale/lang/fa";
@@ -108,8 +108,8 @@ export default {
             })
         },
         // 线索列表
-        Clue_list_Audit(store) {
-            Clue_list_AuditData().then(res => {
+        Clue_list_Audit(store, context) {
+            Clue_list_AuditData(context).then(res => {
                 let {code, data, mes} = res.data
                 if (code === 200) {
                     store.commit("Clue_list_Audit", data)
@@ -118,7 +118,27 @@ export default {
         },
         // 线索详情
 
-
+        // 完善线索
+        EditClueData(store, context) {
+            EditClueDataData(context).then(res => {
+                let {code, mes} = res.data
+                Message({
+                    type: code === 200 ? 'success' : 'error',
+                    message: mes
+                })
+                if (code === 200) {
+                    store.commit('EditClueData')
+                }
+            })
+        },
+        singularTags(store, context) {
+            store.state.tagesMap = []
+            singularTagsData(context).then(res => {
+                let {code, data} = res.data
+                if (code !== 200) return false;
+                store.state.tagesMap = data
+            })
+        }
     },
 
     mutations: {
@@ -131,11 +151,14 @@ export default {
         },
         BeforeUpDatas(state, val) {
             state.UpDataArray = val
-
-
         },
         Clue_list_Audit(state, val) {
-            state.outbound_list = val
+            state.outbound_list = val.data
+            state.pages.pageCount = val.total
+        },
+        EditClueData(state, val) {
+            state.dialog.ClueEditbox = false
+            // location.reload()
         }
 
 
@@ -152,16 +175,37 @@ export default {
             Data_box: false,
             excel_box: false,
             Clue_distribution: false,// 分配线索的 dialog
-            ClueEditbox:false,
+            ClueEditbox: false,
         },
         distribution_form: {
             staff_list: [],
         }, // 分配表单
         UpDataArray: [],
-        outbound_list:[],
-        form_clue:{
-
+        outbound_list: [],
+        form_clue: {
+            user_name: '',
+            sex: null,
+            cityID: '',
+            provinceID: '',
+            CartBrandID: '',
+            flag: 0,
+            notifyurlid: '',
+            clue_id: '',
+            cart_type: 1,
+            tages: []
         },
+        tagesMap: [],
+        pages: {
+            pageCount: 0,
+            pageSize: 10,
+            pageNumber: 1
+        },
+
+        data: {
+            BuyCarCityFrom: [],
+            phoneData:{},
+        }
+
     },
     getters: {},
 }

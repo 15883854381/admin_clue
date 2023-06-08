@@ -63,10 +63,11 @@ export function Clue_allocationData(data) {
 }
 
 // 权限 线索审核列表
-export function Clue_list_AuditData() {
+export function Clue_list_AuditData(data) {
     return request({
         method: 'post',
-        url: '/AdminClue/Clue_list_Audit'
+        url: '/AdminClue/Clue_list_Audit',
+        data
     })
 }
 
@@ -75,6 +76,23 @@ export function Clue_CallPhoneData(data) {
     return request({
         method: 'post',
         url: '/AdminClue/Clue_CallPhone',
+        data
+    })
+}
+
+// 完善线索数据
+export function EditClueDataData(data) {
+    return request({
+        method: 'post',
+        url: '/AdminClue/EditClueData',
+        data
+    })
+}
+// 获取单条线索的 tages
+export function singularTagsData(data){
+    return request({
+        method: 'post',
+        url: '/AdminClue/singularTags',
         data
     })
 }

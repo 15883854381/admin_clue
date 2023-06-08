@@ -4,7 +4,8 @@ import Layout from '@/layout/index'
 import store from "@/store";
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css' //这个样式必须引入
-import {upRouter} from '@/api/routerMap'
+import {permissions_validation_data, upRouter} from '@/api/routerMap'
+import {Message} from "element-ui";
 
 Vue.use(Router)
 
@@ -42,6 +43,11 @@ const constantRoutes = [
                 name: 'personnel',
                 component: () => import('@/views/personnel'),
                 meta: {title: '人员管理', icon: 'el-icon-user-solid'},
+            }, {
+                path: 'myCustomer',
+                name: 'myCustomer',
+                component: () => import('@/views/my_customer'),
+                meta: {title: '我的人员', icon: 'el-icon-user-solid'},
             },
         ]
     },
@@ -89,6 +95,32 @@ const constantRoutes = [
         ]
     },
     {
+        path: '/MyClue',
+        component: Layout,
+        meta: {title: '我的线索', icon: 'el-icon-user-solid'},
+        children: [
+            {
+                path: 'myClue',
+                name: 'myClue',
+                component: () => import('@/views/my_clue'),
+                meta: {title: '线索列表', icon: 'el-icon-user-solid'},
+            }
+        ]
+    },
+    {
+        path: '/MyOrder',
+        component: Layout,
+        meta: {title: '管理订单', icon: 'el-icon-user-solid'},
+        children: [
+            {
+                path: 'myOrder',
+                name: 'myOrder',
+                component: () => import('@/views/my_order'),
+                meta: {title: '我的订单', icon: 'el-icon-user-solid'},
+            }
+        ]
+    },
+    {
         path: '/login',
         component: () => import('@/views/login/index'),
         hidden: true,
@@ -116,8 +148,21 @@ const createRouter = () => new Router({
 const router = createRouter()
 
 // 前置卫士
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     console.log("to", to)
+    if (to.path !== '/login') {
+        if (!localStorage.getItem('token')) {
+            await router.replace('/login')
+            return false;
+        }
+        if (to.path !== '/index') {
+            let res = await permissions_validation_data({url: to.path});
+            if (res.data.code !== 200) {
+                // Message.error(res.data.mes)
+                return false;
+            }
+        }
+    }
 
     NProgress.start()
     next()
