@@ -135,8 +135,9 @@
                                 prop="cart_type"
                                 label="车辆类型">
                             <template slot-scope="scope">
-                                <el-tag :type="scope.row.cart_type === 1?'success':''">
-                                    {{ scope.row.cart_type === 1 ? '新车' : '二手车' }}
+                                <el-tag v-if="scope.row.cart_type === 1 || scope.row.cart_type === 2 "
+                                        :type="scope.row.cart_type === 1?'success':''">
+                                    {{ scope.row.cart_type === 1 ? '新车' : scope.row.cart_type === 2 ? '二手车' : '' }}
                                 </el-tag>
                             </template>
                         </el-table-column>
@@ -225,7 +226,7 @@ export default {
         // 确认上传的数据历史数据界面
         QueryAddData() {
             if (this.queryMapdata.length) {
-                this.queryBatch({data:this.queryMapdata.toString()})
+                this.queryBatch({data: this.queryMapdata.toString()})
             } else {
                 this.queryBatch()
             }

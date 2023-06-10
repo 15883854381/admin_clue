@@ -28,7 +28,10 @@
                                           tabindex="2" auto-complete="on"/>
                             </el-col>
                             <el-col :span="6">
-                                <el-button @click="sendCode" style="height: 52px;margin-left: 2px" type="primary">发送验证码
+                                <el-button :disabled="data.CodeNUm < 60" @click="sendCode"
+                                           style="height: 52px;margin-left: 2px;width: 112px" type="primary">{{
+                                    data.CodeNUm < 60 ? data.CodeNUm + ' 秒': data.codeTime
+                                    }}
                                 </el-button>
                             </el-col>
                         </el-row>
@@ -71,6 +74,7 @@
 <script>
 // import { mapState } from 'vuex'
 import {sendCode} from "@/api/user";
+import {mapState} from "vuex";
 
 export default {
     data() {
@@ -84,7 +88,9 @@ export default {
 
         };
     },
-    computed: {},
+    computed: {
+        ...mapState('login', ['data'])
+    },
     methods: {
         handleLogins() {
             this.$store.dispatch('login/login', this.loginForm).then((res) => {
@@ -99,7 +105,9 @@ export default {
         }
     },
     mounted() {
-    }
+
+    },
+
 }
 </script>
 

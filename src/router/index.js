@@ -149,7 +149,7 @@ const router = createRouter()
 
 // 前置卫士
 router.beforeEach(async (to, from, next) => {
-    console.log("to", to)
+    // console.log("to", to)
     if (to.path !== '/login') {
         if (!localStorage.getItem('token')) {
             await router.replace('/login')

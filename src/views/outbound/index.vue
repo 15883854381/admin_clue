@@ -48,6 +48,7 @@
                                 }}</span>
                         </template>
                     </el-table-column>
+                    <el-table-column  prop="createtime" label="上传日期"></el-table-column>
                     <el-table-column prop="address" label="线索状态">
                         <template slot-scope="scope">
                             <el-tag type="info" v-if="scope.row.flag === 0">无效线索</el-tag>
@@ -57,7 +58,7 @@
                             <el-tag v-if="scope.row.flag === 4">待上线</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column width="110" v-if="outbound_list[0].username" prop="username"
+                    <el-table-column width="110"  prop="username"
                                      label="线索审核人员"></el-table-column>
                     <el-table-column label="操作" align="right">
                         <template slot-scope="scope">
@@ -252,8 +253,9 @@ export default {
                 }
                 this.$set(this.form_clue, item, e[item])
             }
-            this.SelectnotifyurlData({out_trade_no: e.clue_id})
-            this.singularTags({clue_id: e.clue_id})
+            this.data.tableItem = e
+            this.SelectnotifyurlData({out_trade_no: e.clue_id}) // 获取录音
+            this.singularTags({clue_id: e.clue_id})// 获取 tags
             this.dialog.ClueEditbox = true
 
         },
@@ -261,7 +263,6 @@ export default {
         CityData() {
             City().then(res => {
                 this.citylist = res.data.data
-                console.log(this.citylist)
             })
         },
         // change 获取购车地区
@@ -271,7 +272,7 @@ export default {
         },
         // 获取意向品牌
         ChangeCarBrand(e) {
-            console.log(e)
+            // console.log(e)
         },
         // 确认编辑弹窗
         queryEditBtn() {
@@ -316,8 +317,7 @@ export default {
         ChangePage(e) {
             this.pages.pageNumber = e
             this.Clue_list_Audit(this.pages);
-        }
-        ,
+        },
 
         ...mapActions('Ulit', ['CarBrandData', 'SelectnotifyurlData', 'userTags']),
         ...mapActions('clue', ['Clue_list_Audit', 'EditClueData', 'singularTags'])

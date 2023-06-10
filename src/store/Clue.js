@@ -128,6 +128,7 @@ export default {
                 })
                 if (code === 200) {
                     store.commit('EditClueData')
+                    store.dispatch('Clue_list_Audit',store.state.pages);
                 }
             })
         },
@@ -158,7 +159,6 @@ export default {
         },
         EditClueData(state, val) {
             state.dialog.ClueEditbox = false
-            // location.reload()
         }
 
 
@@ -203,7 +203,8 @@ export default {
 
         data: {
             BuyCarCityFrom: [],
-            phoneData:{},
+            phoneData: {},
+            tableItem: {},// 表格当前行的数据
         }
 
     },

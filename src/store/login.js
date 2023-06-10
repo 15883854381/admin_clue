@@ -21,12 +21,23 @@ export default {
         },
 
         sendCode(store, userInfo) {
+            let codeTime = setInterval(() => {
+                store.state.data.CodeNUm -= 1;
+                if (store.state.data.CodeNUm <= 0) {
+                    store.state.data.CodeNUm = 60
+                    clearInterval(codeTime)
+                }
+            }, 1000)
+
             sendCode(userInfo).then((res) => {
                 if (res.data.code !== 200) {
                     Message({
                         type: 'error',
                         message: res.data.mes,
                     });
+                    // 错误时计时 恢复原来数据
+                    store.state.data.CodeNUm = 60
+                    clearInterval(codeTime)
                 } else {
                     Message({
                         type: 'success',
@@ -35,6 +46,8 @@ export default {
                 }
             })
         },
+
+
         login(store, userInfo) {
             return new Promise((resolve, reject) => {
                 login(userInfo).then(res => {
@@ -69,12 +82,16 @@ export default {
     },
     mutations: {
         ROUTERMAP(state, val) {
-            console.log(val)
             state.navlist = val
         }
     },
     state: {
-        navlist: []
+        navlist: [],
+        data: {
+            codeTime: '发送验证码',
+            CodeNUm: 60
+        }
+
     },
     getters: {},
 }
