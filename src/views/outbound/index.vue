@@ -4,17 +4,22 @@
             <div>
                 <el-form :inline="true" ref="form" label-width="80px">
                     <el-form-item label="手机号码">
-                        <el-input></el-input>
+                        <el-input v-model="where.phone_number" clearable placeholder="请输入手机号"></el-input>
                     </el-form-item>
+
                     <el-form-item>
-                        <el-button type="primary">查询</el-button>
+                        <el-select placeholder="请选择" v-model="where.flag">
+                            <el-option label="全部" value=""></el-option>
+                            <el-option label="正在审核" value="2"></el-option>
+                            <el-option label="通过审核" value="1"></el-option>
+                            <el-option label="无效线索" value="0"></el-option>
+                            <el-option label="待上线" value="4"></el-option>
+                        </el-select>
                     </el-form-item>
-                    <!--                    <el-form-item>-->
-                    <!--                        <el-select placeholder="请选择">-->
-                    <!--                            <el-option label="通过审核" value="通过审核"></el-option>-->
-                    <!--                            <el-option label="无效线索" value="无效线索"></el-option>-->
-                    <!--                        </el-select>-->
-                    <!--                    </el-form-item>-->
+
+                    <el-form-item>
+                        <el-button type="primary" @click="SearchWhere">查询</el-button>
+                    </el-form-item>
                 </el-form>
 
 
@@ -48,7 +53,7 @@
                                 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column  prop="createtime" label="上传日期"></el-table-column>
+                    <el-table-column prop="createtime" label="上传日期"></el-table-column>
                     <el-table-column prop="address" label="线索状态">
                         <template slot-scope="scope">
                             <el-tag type="info" v-if="scope.row.flag === 0">无效线索</el-tag>
@@ -58,7 +63,7 @@
                             <el-tag v-if="scope.row.flag === 4">待上线</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column width="110"  prop="username"
+                    <el-table-column width="110" prop="username"
                                      label="线索审核人员"></el-table-column>
                     <el-table-column label="操作" align="right">
                         <template slot-scope="scope">
@@ -316,7 +321,16 @@ export default {
         ,
         ChangePage(e) {
             this.pages.pageNumber = e
-            this.Clue_list_Audit(this.pages);
+            this.Clue_list_Audit({...this.pages, ...this.where});
+        },
+        // where 查询
+        SearchWhere() {
+            this.pages.pageNumber = 1;
+            if (!this.where.phone_number && this.where.flag === '5') {
+                this.Clue_list_Audit()
+            } else {
+                this.Clue_list_Audit(this.where)
+            }
         },
 
         ...mapActions('Ulit', ['CarBrandData', 'SelectnotifyurlData', 'userTags']),
@@ -332,7 +346,7 @@ export default {
     ,
     computed: {
         ...
-            mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap']),
+            mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap', 'where']),
         ...
             mapState('Ulit', ['recordingData', 'userTags_list'])
     }

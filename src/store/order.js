@@ -1,21 +1,21 @@
-import {EditOrderFlat, OrderCount, OrderDatas, Selectnotifyurl} from "@/api/order";
+import {EditOrderFlat, OrderDatas, Selectnotifyurl} from "@/api/order";
 import {Message} from "element-ui";
 import Vue from "vue";
 
 export default {
     namespaced: true,
     actions: {
-        OrderData(state,val) {
+        OrderData(state, val) {
             OrderDatas(val).then(res => {
                 let {code, data, mes} = res.data;
-                state.commit('ORDERDATA', data)
                 if (code !== 200) {
                     Message({
                         type: 'error',
                         message: mes
                     })
+                    return false;
                 }
-                console.log(data)
+                state.commit('ORDERDATA', data)
             })
         },
         EditOrderFlatData(state, val) {
@@ -37,19 +37,11 @@ export default {
                 state.commit('SelectnotifyurlData', data)
             })
         },
-        OrderCountData(state) {
-            OrderCount().then(res => {
-                let data = res.data.data
-                console.log(data)
-                state.commit('OrderCountData', data.count)
-            })
-        }
-
-
     },
     mutations: {
         ORDERDATA(context, val) {
-            context.orderlist = val
+            context.orderlist = val.data
+            context.page.pageCount = val.total
         },
         EditOrderFlatData(context, val) {
             context.orderlist[val.index].flat = val.flat
@@ -57,9 +49,6 @@ export default {
         },
         SelectnotifyurlData(context, val) {
             context.notifyurlData = val
-        },
-        OrderCountData(context, val) {
-            context.page.pageCount = val
         },
 
     },
@@ -76,6 +65,10 @@ export default {
             pageSize: 10,
             pageNumber: 1,
             pageCount: 0,
+        },
+        where: {
+            order_number: '',
+            flat: '',
         }
 
 

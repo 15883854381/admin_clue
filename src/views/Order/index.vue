@@ -1,11 +1,40 @@
 <template>
     <div>
         <Content>
+            <div>
+                <el-form :inline="true" ref="form" label-width="80px">
+                    <el-form-item>
+                        <el-input v-model="where.order_number" clearable placeholder="商户订单号、微信订单号"></el-input>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-select placeholder="请选择" v-model="where.flat">
+                            <el-option value="" label="全部"></el-option>
+                            <el-option value="1" label="交易成功"></el-option>
+                            <el-option value="2" label="未付款"></el-option>
+                            <el-option value="3" label="交易进行中"></el-option>
+                            <el-option value="4" label="已拨打电话"></el-option>
+                            <el-option value="5" label="申述中 "></el-option>
+                            <el-option value="6" label="申述失败 "></el-option>
+                            <el-option value="7" label="申述成功 "></el-option>
+                            <el-option value="8" label="交易关闭"></el-option>
+                            <el-option value="9" label="退款成功"></el-option>
+                        </el-select>
+                    </el-form-item>
+
+
+                    <el-form-item>
+                        <el-button type="primary" @click="SearchWhere">查询</el-button>
+                    </el-form-item>
+                </el-form>
+
+
+            </div>
             <div style="width: 100%">
                 <el-table @row-click="getorderitem" :data="new_order_flag" :height="taheight" style="width: 100%;">
                     <el-table-column prop="nickname" width="100" show-overflow-tooltip
-                                     label="用户昵称"></el-table-column>
-                    <el-table-column prop="phone_number" width="150" label="手机号"></el-table-column>
+                                     label="购买者昵称"></el-table-column>
+                    <el-table-column prop="phone_number" width="150" label="购买者手机"></el-table-column>
                     <el-table-column prop="price" width="100" align="center" label="线索价格"></el-table-column>
                     <el-table-column prop="buy_num" width="120" align="center" label="购买数量条数"></el-table-column>
                     <el-table-column prop="creat_time" show-overflow-tooltip label="创建时间"></el-table-column>
@@ -109,7 +138,6 @@
         </el-dialog>
 
 
-
     </div>
 </template>
 
@@ -120,25 +148,24 @@ import {mapActions, mapGetters, mapState} from "vuex";
 export default {
     data() {
         return {
-            taheight: window.innerHeight - 210,
+            taheight: window.innerHeight - 250,
             flat: '',
         }
     },
     mounted() {
-        this.OrderCountData().then(res => {
-            console.log(this.page)
-        })
         this.OrderData()
     },
     methods: {
-        ...mapActions('order', ['OrderData', 'EditOrderFlatData', 'SelectnotifyurlData', 'OrderCountData']),
+        ...mapActions('order', ['OrderData', 'EditOrderFlatData', 'SelectnotifyurlData']),
         getorderitem(e) {
-            console.log(e)
+            // console.log(e)
             this.data.itemData = e
             this.dialog.orderbox = true
-            this.SelectnotifyurlData({out_trade_no: e.out_trade_no}).then(res => {
-                console.log(this.notifyurlData)
-            })
+            // 查询通话地址
+            if (e.flat === 4 || e.flat === 5 || e.flat === 6) {
+                this.SelectnotifyurlData({out_trade_no: e.out_trade_no})
+            }
+
         },
         editFlat(e) {
             this.$confirm('请谨慎核对申述信息，此操作一旦操作就不再修改！！！', '警告', {
@@ -157,11 +184,15 @@ export default {
         },
         getChange(e) {
             this.page.pageNumber = e
-            this.OrderData(this.page)
+            this.OrderData({...this.page,...this.where})
+        },
+        SearchWhere(e) {
+            this.page.pageNumber = 1;
+            this.OrderData(this.where)
         }
     },
     computed: {
-        ...mapState('order', ['orderlist', 'dialog', 'data', 'notifyurlData', 'page']),
+        ...mapState('order', ['orderlist', 'dialog', 'data', 'notifyurlData', 'page', 'where']),
         ...mapGetters('order', ['new_order_flag'])
 
 

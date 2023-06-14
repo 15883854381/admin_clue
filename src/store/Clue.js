@@ -128,7 +128,7 @@ export default {
                 })
                 if (code === 200) {
                     store.commit('EditClueData')
-                    store.dispatch('Clue_list_Audit',store.state.pages);
+                    store.dispatch('Clue_list_Audit', store.state.pages);
                 }
             })
         },
@@ -199,6 +199,10 @@ export default {
             pageCount: 0,
             pageSize: 10,
             pageNumber: 1
+        },
+        where: {
+            phone_number: '',
+            flag: '',
         },
 
         data: {

@@ -57,7 +57,7 @@
                     title="批量上传"
                     append-to-body
                     :visible.sync="dialog.excel_box"
-                    width="400px">
+                    width="450px">
                 <el-upload
                         :on-change="ChangeUpdateExcel"
                         class="upload-demo"
@@ -155,6 +155,8 @@
                     </span>
                 </el-dialog>
                 <span slot="footer" class="dialog-footer">
+
+                    <el-button @click="DownLoadExcel">下载模板</el-button>
                              <el-button @click="lookHistory">查看历史</el-button>
                             <el-button @click="dialog.excel_box = false">取 消</el-button>
                             <el-button type="primary" @click="queryUpdata">确认上传</el-button>
@@ -231,6 +233,11 @@ export default {
                 this.queryBatch()
             }
         },
+        // 下载 excel 表格
+        DownLoadExcel() {
+            let url = process.env.NODE_ENV === "production" ? `http://s.199909.xyz/` : "http://h.199909.xyz/"
+            window.open(url + 'storage/excel/%E4%B8%8A%E4%BC%A0%E6%A8%A1%E6%9D%BF%E6%96%87%E4%BB%B6.zip');
+        }
     },
     computed: {
         ...mapState('myClue', ['ClueData', 'page', 'dialog', 'SelectUpData', 'updata'])
@@ -244,5 +251,10 @@ export default {
 <style>
 .el-table .warning-row {
     background: #F56C6C;
+}
+
+.upload-demo .el-upload-dragger {
+    width: 412px;
+
 }
 </style>

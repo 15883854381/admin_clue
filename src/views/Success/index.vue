@@ -24,6 +24,7 @@
             </div>
             <el-dialog
                     title="添加案例"
+                    :close-on-click-modal="false"
                     :visible.sync="centerDialogVisible"
                     :modal-append-to-body="false"
                     width="580px"
@@ -63,6 +64,7 @@
                 <el-button type="primary" @click="queryData">确 定</el-button>
               </span>
             </el-dialog>
+<!--            // 预览-->
             <el-dialog
                     title="预览"
                     :visible.sync="Preview"

@@ -21,6 +21,6 @@ export function Selectnotifyurl(data) {
 }
 
 // 获取订单数据总量
-export function OrderCount(data) {
-    return axios.post(url.OrderCount, data)
-}
+// export function OrderCount(data) {
+//     return axios.post(url.OrderCount, data)
+// }
