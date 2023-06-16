@@ -91,6 +91,7 @@
                 :visible.sync="dialog.ClueEditbox"
                 width="600px"
                 append-to-body
+                destroy-on-close
         >
 
             <el-form ref="form" :model="form_clue" label-width="100px">
@@ -177,9 +178,7 @@
                         prop="name"
                         label="录音">
                     <template slot-scope="scope">
-                        <audio controls style="width: 100%">
-                            <source :src="scope.row.record_file_url" type="audio/wav" width="300">
-                        </audio>
+                        <div v-html="reconstitution_notifyur(scope.row.record_file_url)"></div>
                     </template>
                 </el-table-column>
                 <el-table-column label="状态" width="120px">
@@ -345,10 +344,15 @@ export default {
     }
     ,
     computed: {
-        ...
-            mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap', 'where']),
-        ...
-            mapState('Ulit', ['recordingData', 'userTags_list'])
+        reconstitution_notifyur() {
+            return function (recordingData) {
+                return ` <audio controls style="width: 100%">
+                            <source src="${recordingData}" type="audio/wav" width="300">
+                         </audio>`;
+            }
+        },
+        ...mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap', 'where']),
+        ...mapState('Ulit', ['recordingData', 'userTags_list'])
     }
     ,
 }
