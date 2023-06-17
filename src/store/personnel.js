@@ -92,7 +92,6 @@ export default {
         supportStaff(store) {
             supportStaffData().then(res => {
                 let {code, data} = res.data
-                console.log(data)
                 if (code === 200) {
                     store.commit('supportStaff', data)
                 }

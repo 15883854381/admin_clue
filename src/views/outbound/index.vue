@@ -6,7 +6,6 @@
                     <el-form-item label="手机号码">
                         <el-input v-model="where.phone_number" clearable placeholder="请输入手机号"></el-input>
                     </el-form-item>
-
                     <el-form-item>
                         <el-select placeholder="请选择" v-model="where.flag">
                             <el-option label="全部" value=""></el-option>
@@ -16,13 +15,11 @@
                             <el-option label="待上线" value="4"></el-option>
                         </el-select>
                     </el-form-item>
-
                     <el-form-item>
                         <el-button type="primary" @click="SearchWhere">查询</el-button>
+                        <el-button v-if="RoleStateData"  @click="dialog.Clue_distribution= true" type="primary">线索分配</el-button>
                     </el-form-item>
                 </el-form>
-
-
             </div>
             <div style="width: 100%">
                 <el-table :data="outbound_list" :height="taheight" style="width: 100%;">
@@ -110,7 +107,6 @@
                 <el-form-item label="意向品牌">
                     <el-select
                             v-model="form_clue.CartBrandID"
-                            @change="ChangeCarBrand"
                             filterable
                             collapse-tags
                             placeholder="请选择">
@@ -196,6 +192,37 @@
             </span>
         </el-dialog>
 
+        <!-- 分配线索 -->
+        <el-dialog
+                title="线索分配"
+                :visible.sync="dialog.Clue_distribution"
+                append-to-body
+                width="30%">
+            <el-form :inline="true" class="demo-form-inline">
+                <el-form-item label="线索均分">
+                    <el-select
+                            v-model="distribution_form.staff_list"
+                            multiple
+                            collapse-tags
+                            style="margin-left: 20px;"
+                            placeholder="请选择">
+                        <el-option
+                                v-for="item in $store.state.personnel.support_staff_list"
+                                :key="item.id"
+                                :label="item.username"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialog.Clue_distribution = false">取 消</el-button>
+                <el-button type="primary" @click="queryAllocation">确 定</el-button>
+            </span>
+        </el-dialog>
+
 
     </div>
 </template>
@@ -222,6 +249,7 @@ export default {
     }
     ,
     methods: {
+
         // 拨打电话
         callPhoneBtn(e) {
             this.ClickBtn = true
@@ -236,8 +264,7 @@ export default {
                     this.ClickBtn = false
                 }, 2000)
             })
-        }
-        ,
+        },
         // 编辑弹窗的界面
         EditClueBox(e) {
             for (let item in this.form_clue) {
@@ -274,10 +301,6 @@ export default {
             this.$set(this.form_clue, 'provinceID', e[0])
             this.$set(this.form_clue, 'cityID', e[1])
         },
-        // 获取意向品牌
-        ChangeCarBrand(e) {
-            // console.log(e)
-        },
         // 确认编辑弹窗
         queryEditBtn() {
 
@@ -305,6 +328,7 @@ export default {
             }
             this.EditClueData(this.form_clue)
         },
+        // 监听选择的标签
         ChangeTags(tages) {
             this.form_clue.tages = tages.map(item => {
                 return item[1]
@@ -316,8 +340,8 @@ export default {
                 this.$message.error('请选择有效的录音')
             }
             this.data.phoneData = e
-        }
-        ,
+        },
+        // 监听分页
         ChangePage(e) {
             this.pages.pageNumber = e
             this.Clue_list_Audit({...this.pages, ...this.where});
@@ -331,9 +355,14 @@ export default {
                 this.Clue_list_Audit(this.where)
             }
         },
+        // 确认分配
+        queryAllocation() {
+            this.a_queryAllocation()
+        },
 
-        ...mapActions('Ulit', ['CarBrandData', 'SelectnotifyurlData', 'userTags']),
-        ...mapActions('clue', ['Clue_list_Audit', 'EditClueData', 'singularTags'])
+        ...mapActions('Ulit', ['CarBrandData', 'SelectnotifyurlData', 'userTags', 'RoleState']),
+        ...mapActions('clue', ['Clue_list_Audit', 'EditClueData', 'singularTags','a_queryAllocation']),
+        ...mapActions('personnel', ['supportStaff'])
     }
     ,
     mounted() {
@@ -341,6 +370,8 @@ export default {
         this.CityData()
         this.CarBrandData()
         this.userTags()
+        this.RoleState()
+        this.supportStaff()
     }
     ,
     computed: {
@@ -351,8 +382,8 @@ export default {
                          </audio>`;
             }
         },
-        ...mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap', 'where']),
-        ...mapState('Ulit', ['recordingData', 'userTags_list'])
+        ...mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap', 'where','distribution_form']),
+        ...mapState('Ulit', ['recordingData', 'userTags_list', 'RoleStateData'])
     }
     ,
 }

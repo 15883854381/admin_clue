@@ -32,3 +32,10 @@ export function userTagsData(data){
         data
     })
 }
+
+export function RoleStateData(){
+    return request({
+        method: 'post',
+        url: 'AdminRole/RoleState',
+    })
+}

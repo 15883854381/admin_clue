@@ -1,7 +1,8 @@
 // 导入登录接口
 import {role_list} from "@/api/role";
 import {Message} from "element-ui";
-import {CarBrand, SelectnotifyurlData, userTagsData} from "@/api/Ulit";
+import {CarBrand, SelectnotifyurlData, userTagsData,RoleStateData} from "@/api/Ulit";
+import el from "element-ui/src/locale/lang/el";
 
 
 export default {
@@ -31,6 +32,22 @@ export default {
             userTagsData().then(res => {
                 store.commit('userTags', res.data.data)
             })
+        },
+        // 获取用户是否哪个角色
+        RoleState(store) {
+            RoleStateData().then(res => {
+                let {code, data, mes} = res.data
+                if (code !== 200) {
+                    Message.error(mes)
+                    return false;
+                }
+
+                if (data.authority === 1 || data.authority === 2) {
+                    store.commit('ROLESTATE', true)
+                } else {
+                    store.commit('ROLESTATE', false)
+                }
+            })
         }
 
     },
@@ -40,17 +57,21 @@ export default {
         },
         SelectnotifyurlData(state, val) {
             state.recordingData = val
-
-
         },
         userTags(state, val) {
             state.userTags_list = val
+        },
+        ROLESTATE(state, val) {
+            state.RoleStateData = val
         }
+
+
     },
     state: {
         CarBrandList: [],
         recordingData: [], // 录音
         userTags_list: [],
+        RoleStateData: false
     },
     getters: {},
 }
