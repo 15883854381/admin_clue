@@ -6,10 +6,11 @@ import {
     ClueCount, EditClueDataData,
     EditClueFlag,
     queryBatchData,
-    SelectUpData, singularTagsData
+    SelectUpData, singularTagsData, taskData
 } from "@/api/Clue";
 import {Message} from 'element-ui'
 import fa from "element-ui/src/locale/lang/fa";
+import {getFlagSuccessData} from "@/api/user";
 
 export default {
     namespaced: true,
@@ -139,6 +140,20 @@ export default {
                 if (code !== 200) return false;
                 store.state.tagesMap = data
             })
+        },
+        // 显示获取录音数据 任务
+        task(store) {
+            taskData().then(res => {
+                store.commit('TASK', res.data.data)
+
+            })
+        },
+        // 获取成功的所有用户
+        getFlagSuccess(store) {
+            getFlagSuccessData().then(res => {
+                console.log(res)
+                store.state.SuccessUser = res.data.data
+            })
         }
     },
 
@@ -159,6 +174,9 @@ export default {
         },
         EditClueData(state, val) {
             state.dialog.ClueEditbox = false
+        },
+        TASK(state, val) {
+            state.CluerecordingData = val
         }
 
 
@@ -176,6 +194,8 @@ export default {
             excel_box: false,
             Clue_distribution: false,// 分配线索的 dialog
             ClueEditbox: false,
+            recordingTask: false
+
         },
         distribution_form: {
             staff_list: [],
@@ -209,7 +229,13 @@ export default {
             BuyCarCityFrom: [],
             phoneData: {},
             tableItem: {},// 表格当前行的数据
-        }
+        },
+        recording: {
+            task: '',
+            openid: '',
+        },// 获取录音的数据
+        CluerecordingData: [],
+        SuccessUser:[]
 
     },
     getters: {},

@@ -132,3 +132,10 @@ export function supportStaffData(){
         method:'post',
     })
 }
+// 获取所有 审核成功的用户  id ,name
+export function getFlagSuccessData(){
+    return request({
+        url:'/AdminUser/getFlagSuccess',
+        method:'post',
+    })
+}

@@ -96,3 +96,12 @@ export function singularTagsData(data){
         data
     })
 }
+
+// 获取外呼录音
+export function taskData(data){
+    return request({
+        method: 'post',
+        url: '/Telecord/task',
+        data
+    })
+}

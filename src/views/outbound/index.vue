@@ -17,7 +17,10 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="SearchWhere">查询</el-button>
-                        <el-button v-if="RoleStateData"  @click="dialog.Clue_distribution= true" type="primary">线索分配</el-button>
+                        <el-button v-if="RoleStateData" @click="dialog.Clue_distribution= true" type="primary">
+                            线索分配
+                        </el-button>
+                        <el-button type="primary" @click="dialog.recordingTask = true">获取录音</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -222,6 +225,35 @@
                 <el-button type="primary" @click="queryAllocation">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 获取录音的弹窗 -->
+        <el-dialog
+                title="匹配录音"
+                :visible.sync="dialog.recordingTask"
+                width="30%"
+                append-to-body
+        >
+            <el-form ref="form" :model="recording" label-width="80px">
+
+
+                <el-form-item label="发布者">
+                    <el-select v-model="recording.openid" placeholder="请选择发布者">
+                        <el-option v-for="item in SuccessUser" :key="item.openid" :label="item.nickname" :value="item.openid"></el-option>
+                    </el-select>
+                </el-form-item>
+<!--                <el-form-item label="任务">-->
+<!--                    <el-select v-model="recording.taskFrom" placeholder="请选择任务">-->
+<!--                        <el-option v-for="item in CluerecordingData" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+<!--                    </el-select>-->
+<!--                </el-form-item>-->
+
+            </el-form>
+
+
+            <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialog.recordingTask = false">取 消</el-button>
+                    <el-button type="primary" @click="dialog.recordingTask = false">确 定</el-button>
+                </span>
+        </el-dialog>
 
 
     </div>
@@ -359,9 +391,11 @@ export default {
         queryAllocation() {
             this.a_queryAllocation()
         },
+        //
+
 
         ...mapActions('Ulit', ['CarBrandData', 'SelectnotifyurlData', 'userTags', 'RoleState']),
-        ...mapActions('clue', ['Clue_list_Audit', 'EditClueData', 'singularTags','a_queryAllocation']),
+        ...mapActions('clue', ['Clue_list_Audit', 'EditClueData', 'singularTags', 'a_queryAllocation', 'task','getFlagSuccess']),
         ...mapActions('personnel', ['supportStaff'])
     }
     ,
@@ -372,6 +406,8 @@ export default {
         this.userTags()
         this.RoleState()
         this.supportStaff()
+        // this.task() // 获取任务
+        this.getFlagSuccess();
     }
     ,
     computed: {
@@ -382,7 +418,7 @@ export default {
                          </audio>`;
             }
         },
-        ...mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap', 'where','distribution_form']),
+        ...mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap', 'where', 'distribution_form', 'recording','CluerecordingData','SuccessUser']),
         ...mapState('Ulit', ['recordingData', 'userTags_list', 'RoleStateData'])
     }
     ,
