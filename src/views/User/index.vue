@@ -30,6 +30,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="notes_name" label="备注名称"></el-table-column>
+                <el-table-column prop="enroll_time" show-overflow-tooltip label="注册时间"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button @click="EditUserFlasBtn(scope.row,scope.$index)">审核信息</el-button>
