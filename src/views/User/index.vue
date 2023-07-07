@@ -46,44 +46,57 @@
         <el-dialog
                 title="审核信息"
                 :visible.sync="dialogVisible"
+                destroy-on-close
                 :modal-append-to-body="false"
                 width="30%">
+            <el-form ref="form" :model="ExamineForm" label-width="80px">
+                <el-form-item label="主体">
+                    <el-radio-group v-model="ExamineForm.type">
+                        <el-radio :label="1">个人</el-radio>
+                        <el-radio :label="2">公司</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="联系人">
+                    <el-input v-model="ExamineForm.username"></el-input>
+                </el-form-item>
+                <div v-if="ExamineForm.type === 2">
 
-            <el-descriptions v-if="UserProcessData.type" direction="vertical" :column="4" border>
-                <el-descriptions-item label="公司名称">{{ UserProcessData.companyName }}</el-descriptions-item>
-                <el-descriptions-item label="认证类型">{{ UserProcessData.type === 1 ? '个人' : '公司' }}
-                </el-descriptions-item>
-                <el-descriptions-item label="联系人" :span="2">{{ UserProcessData.username }}</el-descriptions-item>
-                <el-descriptions-item label=联系电话>
-                    {{ UserProcessData.phone_number }}
-                </el-descriptions-item>
-                <el-descriptions-item label=图片>
-                    <el-image
-                            v-for="item in UserProcessData.img"
-                            :key="item"
-                            style="width: 100px; height: 100px"
-                            :src="item"
-                            :preview-src-list="UserProcessData.img">
-                    </el-image>
-                </el-descriptions-item>
-            </el-descriptions>
+                    <el-form-item label="公司名称">
+                        <el-input v-model="ExamineForm.companyName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="营业执照">
+                        <el-upload
+                                :limit="1"
+                                list-type="picture"
+                                class="avatar-uploader"
+                                action="#"
+                                :show-file-list="false"
+                                :auto-upload="false"
+                                :on-change="handleAvatarSuccess">
+                            <el-image class="avatar" v-if="image" :src="image"></el-image>
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                    </el-form-item>
+                </div>
 
-            <div style="margin: 20px 0">
-                <el-input v-model="notesName" placeholder="请公司备注名称"></el-input>
-            </div>
+                <el-form-item label="备注名称">
+                    <el-input v-model="ExamineForm.notesName" placeholder="请公司备注名称"></el-input>
+                </el-form-item>
 
-
-            <el-radio-group v-model="flas">
-                <el-radio :label="1">审核通过</el-radio>
-                <el-radio :label="2">审核不通过</el-radio>
-                <el-radio :label="4">只可上传</el-radio>
-                <el-radio :label="5">只可购买</el-radio>
-            </el-radio-group>
+                <el-form-item label="审核状态">
+                    <el-radio-group v-model="ExamineForm.flas">
+                        <el-radio :label="1">审核通过</el-radio>
+                        <el-radio :label="2">审核不通过</el-radio>
+                        <el-radio :label="4">只可上传</el-radio>
+                        <el-radio :label="5">只可购买</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-form>
 
             <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="queryEditFlas">确 定</el-button>
-  </span>
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="queryEditFlas">确 定</el-button>
+            </span>
         </el-dialog>
     </Content>
 
@@ -102,21 +115,31 @@ export default {
             tableData: [],
             taheight: window.innerHeight - 210,
             dialogVisible: false,
-            flas: 1,
             update: {},
-            notesName: '',
             page: {
                 pageSize: 10,
                 pageNumber: 1,
                 pageCunt: 0,
             },
             UserProcessData: {},
+            ExamineForm: {
+                notesName: '',
+                flas: 1,
+                companyName: '',
+                openid: '',
+                type: '',
+                username: '',
+                id: '',
+            },
+            image: '',
         }
     },
     mounted() {
         this.getUserAll();
     },
     methods: {
+
+        // 获取列表数据
         getUserAll(data) {
             getUserAll(data).then(res => {
                 let {count, data} = res.data.data
@@ -124,63 +147,87 @@ export default {
                 this.tableData = data
             })
         },
+        // 编辑状态
         EditUserFlasBtn(row, index) {
-            this.flas = row.flas
-            this.notesName = row.notes_name
-            this.update = row
-            this.update.index = index
-            this.dialogVisible = true;
-            this.UserProcessData = {}
             this.getEnevtUserProcess(row.id)
+            this.update = row
+            this.dialogVisible = true;
         },
         // 确认修改用户信息
         queryEditFlas() {
-            if (this.UserProcessData?.type === undefined) {
-                this.$message({
-                    message: '用户还没有上传审核信息',
-                    type: 'error'
-                });
-                return false
+            this.ExamineForm.openid = this.update.id
+            const FromData = new FormData();
+            for (let item in this.ExamineForm) {
+                FromData.append(item, this.ExamineForm[item] || '')
             }
-            editUserFlas({
-                ...this.update, ...{
-                    flas: this.flas,
-                    notesName: this.notesName,
-                    type: this.UserProcessData.type
-                }
-            }).then(res => {
+
+            editUserFlas(FromData).then(res => {
                 let {code, mes} = res.data
                 if (code !== 200) {
-                    this.$message({
-                        message: mes,
-                        type: 'error'
-                    });
+                    this.$message.error(mes);
                     return false;
                 }
-                this.update.flas = this.flas
-                this.$message({
-                    message: mes,
-                    type: 'success'
-                });
+                this.update.flas = this.ExamineForm.flas
+                this.update.notes_name = this.ExamineForm.notesName
+                this.$message.success(mes);
                 this.dialogVisible = false;
             })
         },
+
+        // 修改页码
         EditPage(e) {
             this.page.pageNumber = e
             this.getUserAll(this.page)
         },
+
+        // 点击编辑时的请求数据
         getEnevtUserProcess(e) {
             getEnevtUserProcessData({id: e}).then(res => {
                 let {data, code} = res.data
                 if (code === 200) {
-                    this.UserProcessData = data
+                    this.image = data.img
+                    this.ExamineForm = data
+                } else {
+                    this.ExamineForm = {}
                 }
+
+
             })
-        }
+        },
+        // 上传文件的框框
+        handleAvatarSuccess(res, file) {
+            this.ExamineForm.ImgFile = res.raw
+            this.image = window.URL.createObjectURL(res.raw);
+        },
     }
 }
 </script>
 
-<style scoped>
+<style>
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
 
+.avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+}
+
+.avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+}
 </style>
