@@ -52,7 +52,7 @@
                                :page-size="page.pageSize" :total="page.PageCount">
                 </el-pagination>
             </div>
-            <!--            批量上传得界面-->
+            <!-- 批量上传得界面 -->
             <el-dialog
                     title="批量上传"
                     append-to-body
@@ -104,33 +104,12 @@
                                 </el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column
-                                prop="phone_number"
-                                label="手机号码"
-                                width="180">
-                        </el-table-column>
-                        <el-table-column
-                                prop="sales"
-                                label="售卖次数">
-                        </el-table-column>
-                        <el-table-column
-                                prop="unitPrice_1"
-                                label="价格【1】">
-                        </el-table-column>
-                        <el-table-column
-                                prop="unitPrice_2"
-                                label="价格【2】">
-                        </el-table-column>
-                        <el-table-column
-                                prop="unitPrice_3"
-                                label="价格【3】">
-                        </el-table-column>
-                        <el-table-column
-                                prop="PhoneBelongingplace"
-                                label="号码归属地"
-                                show-overflow-tooltip
-                        >
-                        </el-table-column>
+                        <el-table-column prop="phone_number" label="手机号码" width="180"></el-table-column>
+                        <el-table-column prop="sales" label="售卖次数"></el-table-column>
+                        <el-table-column prop="unitPrice_1" label="价格【1】"></el-table-column>
+                        <el-table-column prop="unitPrice_2" label="价格【2】"></el-table-column>
+                        <el-table-column prop="unitPrice_3" label="价格【3】"></el-table-column>
+                        <el-table-column prop="PhoneBelongingplace" label="号码归属地" show-overflow-tooltip></el-table-column>
                         <el-table-column
                                 prop="cart_type"
                                 label="车辆类型">

@@ -3,11 +3,12 @@
         <Content>
             <div>
                 <el-form :inline="true" ref="form" label-width="80px">
-                    <el-form-item label="手机号码">
-                        <el-input v-model="where.phone_number" clearable placeholder="请输入手机号"></el-input>
+                    <el-form-item>
+                        <el-input size="mini" v-model="where.phone_number" clearable
+                                  placeholder="请输入手机号"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-select placeholder="请选择" v-model="where.flag">
+                        <el-select size="mini" placeholder="请选择线索状态" v-model="where.flag">
                             <el-option label="全部" value=""></el-option>
                             <el-option label="正在审核" value="2"></el-option>
                             <el-option label="通过审核" value="1"></el-option>
@@ -16,16 +17,41 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="SearchWhere">查询</el-button>
-                        <el-button v-if="RoleStateData" @click="dialog.Clue_distribution= true" type="primary">
+                        <el-select size="mini" placeholder="请选择汽车品牌" filterable v-model="where.carBrant" multiple
+                                   collapse-tags>
+                            <el-option label="请选择汽车品牌" value=""></el-option>
+                            <el-option
+                                    v-for="item in $store.state.Ulit.CarBrandList"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-cascader
+                                size="mini"
+                                placeholder="请选择购买地区"
+                                v-model="where.buyCar"
+                                :props="{value:'id',label:'text',multiple: true, checkStrictly: true}"
+                                :options="citylist"
+                                clearable
+                        ></el-cascader>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-button size="mini" type="primary" @click="SearchWhere">查询</el-button>
+                        <el-button size="mini" v-if="RoleStateData" @click="dialog.Clue_distribution= true"
+                                   type="primary">
                             线索分配
                         </el-button>
-                        <el-button type="primary" @click="dialog.recordingTask = true">获取录音</el-button>
+                        <el-button size="mini" type="primary" @click="dialog.recordingTask = true">获取录音</el-button>
+                        <el-button size="mini" type="primary" @click="dialog.Batchaudit = true">批量审核</el-button>
                     </el-form-item>
                 </el-form>
             </div>
             <div style="width: 100%">
-                <el-table :data="outbound_list" :height="taheight" style="width: 100%;">
+                <el-table size="mini" :data="outbound_list" :height="taheight" style="width: 100%;">
                     <el-table-column prop="nickname" show-overflow-tooltip label="发布者"></el-table-column>
                     <el-table-column label="用户（姓）">
                         <template slot-scope="scope">
@@ -34,11 +60,9 @@
                                 }}{{ scope.row.sex === 1 ? '先生' : '女士' }}</span>
                         </template>
                     </el-table-column>
-
                     <el-table-column prop="phone_number" label="手机号码"></el-table-column>
                     <el-table-column prop="PhoneBelongingplace" label="手机归属地"></el-table-column>
                     <el-table-column prop="CartBrand" show-overflow-tooltip label="意向品牌"></el-table-column>
-
                     <el-table-column prop="sales" show-overflow-tooltip label="购车地区">
                         <template slot-scope="scope">
                             <span>{{ scope.row.province }}{{ scope.row.city }}</span>
@@ -83,9 +107,9 @@
                                layout="prev, pager, next" :total="pages.pageCount">
                 </el-pagination>
             </div>
-
         </Content>
 
+        <!-- 编辑信息 -->
         <el-dialog
                 title="完善线索信息"
                 :visible.sync="dialog.ClueEditbox"
@@ -93,12 +117,17 @@
                 append-to-body
                 destroy-on-close
         >
+            <template #title>
+                <span>完善线索信息</span>
+                &nbsp;
+                <el-button v-if="form_clue.flag === 1" @click="clickCopy" type="primary" size="mini">复制分享链接
+                </el-button>
+            </template>
 
             <el-form ref="form" :model="form_clue" label-width="100px">
                 <el-form-item label="用户姓名">
                     <el-input v-model="form_clue.user_name"></el-input>
                 </el-form-item>
-
 
                 <el-form-item label="用户性别">
                     <el-radio-group v-model="form_clue.sex">
@@ -151,7 +180,6 @@
                         <!--                        <el-radio :label="3">下架线索</el-radio>-->
                         <!--                        <el-radio :label="2">线索审核</el-radio>-->
                     </el-radio-group>
-
                 </el-form-item>
 
                 <el-form-item label="线索类型">
@@ -197,11 +225,12 @@
 
         <!-- 分配线索 -->
         <el-dialog
+
                 title="线索分配"
                 :visible.sync="dialog.Clue_distribution"
-                append-to-body
-                width="30%">
-            <el-form :inline="true" class="demo-form-inline">
+                :modal-append-to-body="false"
+                width="360px">
+            <el-form :inline="true" size="mini" class="demo-form-inline">
                 <el-form-item label="线索均分">
                     <el-select
                             v-model="distribution_form.staff_list"
@@ -221,10 +250,11 @@
 
 
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialog.Clue_distribution = false">取 消</el-button>
-                <el-button type="primary" @click="queryAllocation">确 定</el-button>
+                <el-button size="mini" @click="dialog.Clue_distribution = false">取 消</el-button>
+                <el-button size="mini" type="primary" @click="queryAllocation">确 定</el-button>
             </span>
         </el-dialog>
+
         <!-- 获取录音的弹窗 -->
         <el-dialog
                 title="匹配录音"
@@ -233,19 +263,12 @@
                 append-to-body
         >
             <el-form ref="form" :model="recording" label-width="80px">
-
-
                 <el-form-item label="发布者">
                     <el-select v-model="recording.openid" placeholder="请选择发布者">
-                        <el-option v-for="item in SuccessUser" :key="item.openid" :label="item.nickname" :value="item.openid"></el-option>
+                        <el-option v-for="item in SuccessUser" :key="item.openid" :label="item.nickname"
+                                   :value="item.openid"></el-option>
                     </el-select>
                 </el-form-item>
-<!--                <el-form-item label="任务">-->
-<!--                    <el-select v-model="recording.taskFrom" placeholder="请选择任务">-->
-<!--                        <el-option v-for="item in CluerecordingData" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-<!--                    </el-select>-->
-<!--                </el-form-item>-->
-
             </el-form>
 
 
@@ -255,15 +278,64 @@
                 </span>
         </el-dialog>
 
+        <!-- 批量审核 -->
+        <el-dialog
+                title="批量审核"
+                :visible.sync="dialog.Batchaudit"
+                width="470px"
+                append-to-body
+        >
+            <el-alert
+                    title="批量审核只会审核信息完整的线索"
+                    type="warning"
+                    effect="dark">
+            </el-alert>
+            <div style="margin-top: 20px"></div>
+            <el-form size="mini" ref="form" :model="BatchauditUpData" label-width="80px">
+                <el-form-item label="发布者">
+                    <el-select v-model="BatchauditUpData.upUserOpenid" placeholder="请选择发布者">
+                        <el-option v-for="item in SuccessUser" :key="item.openid" :label="item.nickname"
+                                   :value="item.openid"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="发布时间">
+                    <el-date-picker
+                            v-model="BatchauditUpData_Daterange"
+                            type="daterange"
+                            placement="bottom-start"
+                            value-format="yyyy-MM-dd"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期">
+                    </el-date-picker>
+                </el-form-item>
+
+                <el-form-item label="审核状态">
+                    <el-radio-group v-model="BatchauditUpData.flag">
+                        <el-radio :label="1">通过审核</el-radio>
+                        <el-radio :label="0">无效线索</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+            </el-form>
+
+
+            <span slot="footer" class="dialog-footer">
+                    <el-button size="mini" @click="dialog.Batchaudit = false">取 消</el-button>
+                    <el-button size="mini" type="primary" @click="submitBatchatch">确 定</el-button>
+                </span>
+        </el-dialog>
+
 
     </div>
 </template>
 
 <script>
 import Content from "@/components/Content/index"
-import {Clue_CallPhoneData, Clue_list_AuditData} from "@/api/Clue";
+import {BatchaudiData, Clue_CallPhoneData, Clue_list_AuditData} from "@/api/Clue";
 import {mapActions, mapState} from "vuex";
 import {CarBrand, City} from "@/api/Ulit";
+import {config} from '@/utils/publicConfig'
 
 export default {
     data() {
@@ -273,6 +345,7 @@ export default {
             citylist: [],
             CarBrandList: [],
             props: {multiple: true, value: 'id', label: 'text'},
+            BatchauditUpData_Daterange: [],
         };
 
     },
@@ -391,11 +464,42 @@ export default {
         queryAllocation() {
             this.a_queryAllocation()
         },
-        //
-
+        // 复制分享链接
+        clickCopy() {
+            let url = `${config.url}/#/list_Business_Detail?type=${this.form_clue.cart_type}&clue_id=${this.form_clue.clue_id}`;
+            const save = function (e) {
+                e.clipboardData.setData('text/plain', url)
+                e.preventDefault() // 阻止默认行为
+            }
+            document.addEventListener('copy', save) // 添加一个copy事件
+            document.execCommand('copy') // 执行copy方法
+            this.$message({message: '复制成功', type: 'success'})
+        },
+        // 提交批量审核数据
+        submitBatchatch() {
+            console.log(this.BatchauditUpData)
+            if (this.BatchauditUpData_Daterange.length <= 0) {
+                this.$message.error('请选择或填写完整的数据')
+                return false;
+            }
+            for (let i in this.BatchauditUpData) {
+                if (this.BatchauditUpData[i] === '') {
+                    this.$message.error('请选择或填写完整的数据')
+                    return false;
+                }
+            }
+            BatchaudiData(this.BatchauditUpData).then(res => {
+                let {data, code, mes} = res.data
+                this.$message({
+                    type: code === 200 ? 'success' : 'error',
+                    message: mes
+                })
+                this.dialog.Batchaudit = false
+            })
+        },
 
         ...mapActions('Ulit', ['CarBrandData', 'SelectnotifyurlData', 'userTags', 'RoleState']),
-        ...mapActions('clue', ['Clue_list_Audit', 'EditClueData', 'singularTags', 'a_queryAllocation', 'task','getFlagSuccess']),
+        ...mapActions('clue', ['Clue_list_Audit', 'EditClueData', 'singularTags', 'a_queryAllocation', 'task', 'getFlagSuccess']),
         ...mapActions('personnel', ['supportStaff'])
     }
     ,
@@ -408,8 +512,7 @@ export default {
         this.supportStaff()
         // this.task() // 获取任务
         this.getFlagSuccess();
-    }
-    ,
+    },
     computed: {
         reconstitution_notifyur() {
             return function (recordingData) {
@@ -418,10 +521,17 @@ export default {
                          </audio>`;
             }
         },
-        ...mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap', 'where', 'distribution_form', 'recording','CluerecordingData','SuccessUser']),
+        ...mapState('clue', ['outbound_list', 'dialog', 'form_clue', 'data', 'pages', 'tagesMap', 'where', 'distribution_form', 'recording', 'CluerecordingData', 'SuccessUser', 'BatchauditUpData']),
         ...mapState('Ulit', ['recordingData', 'userTags_list', 'RoleStateData'])
+    },
+    watch: {
+        'BatchauditUpData_Daterange': {
+            handler(val) {
+                this.$set(this.BatchauditUpData, 'startTime', val[0] + ' 00:00:00')
+                this.$set(this.BatchauditUpData, 'endTime', val[1] + ' 23:59:59')
+            },
+        }
     }
-    ,
 }
 </script>
 

@@ -43,3 +43,7 @@ export function searchobj(searchobj) {
 export function isExternal(path) {
     return /^(https?:|mailto:|tel:)/.test(path)
 }
+
+
+
+

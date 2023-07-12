@@ -194,7 +194,8 @@ export default {
             excel_box: false,
             Clue_distribution: false,// 分配线索的 dialog
             ClueEditbox: false,
-            recordingTask: false
+            recordingTask: false,
+            Batchaudit: false,
 
         },
         distribution_form: {
@@ -217,12 +218,15 @@ export default {
         tagesMap: [],
         pages: {
             pageCount: 0,
-            pageSize: 10,
+            pageSize: 15,
             pageNumber: 1
         },
+        // 搜索条件
         where: {
             phone_number: '',
             flag: '',
+            carBrant: null,
+            buyCar: '',
         },
 
         data: {
@@ -235,8 +239,15 @@ export default {
             openid: '',
         },// 获取录音的数据
         CluerecordingData: [],
-        SuccessUser:[]
+        SuccessUser: [],
+        BatchauditUpData: {
+            upUserOpenid: '',
+            flag: '',
+        },
+
 
     },
-    getters: {},
+    getters: {
+
+    },
 }

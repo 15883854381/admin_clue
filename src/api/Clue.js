@@ -105,3 +105,12 @@ export function taskData(data){
         data
     })
 }
+
+// 批量审核
+export function BatchaudiData(data){
+    return request({
+        method: 'post',
+        url: '/AdminClue/Batchaudi',
+        data
+    })
+}
