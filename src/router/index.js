@@ -93,6 +93,19 @@ const constantRoutes = [
                 meta: {title: '线索列表', icon: 'el-icon-user-solid'},
             }
         ]
+    },{
+        path: '/system_settings',
+        redirect: '/system_settings',
+        component: Layout,
+        meta: {title: '系统设置', icon: 'iconfont el-icon-biaoge'},
+        children: [
+            {
+                path: 'system_settings',
+                name: 'system_settings',
+                component: () => import('@/views/settings'),
+                meta: {title: '线索列表', icon: 'el-icon-user-solid'},
+            }
+        ]
     },
     {
         path: '/MyClue',

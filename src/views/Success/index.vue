@@ -2,9 +2,9 @@
     <div>
 
         <Content>
-            <el-button type="primary" @click="centerDialogVisible = true;AddOREditState=true">添加案例</el-button>
+            <el-button size="small" type="primary" @click="centerDialogVisible = true;AddOREditState=true">添加案例</el-button>
             <div style="width: 100%">
-                <el-table :data="tableData" :height="taheight" style="width: 100%;">
+                <el-table size="mini" :data="tableData" :height="taheight" style="width: 100%;">
                     <el-table-column prop="title" label="标题"></el-table-column>
                     <el-table-column prop="create_time" label="上传时间"></el-table-column>
                     <el-table-column width="150" label="状态">

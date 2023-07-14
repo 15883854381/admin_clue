@@ -1,10 +1,10 @@
 <template>
     <div>
         <Content>
-            <el-button type="primary" @click="ShowDialog">新增人员</el-button>
+            <el-button size="small" type="primary" @click="ShowDialog">新增人员</el-button>
 
             <div style="width: 100%">
-                <el-table :data="person_list" :height="taheight" style="width: 100%;">
+                <el-table size="mini" :data="person_list" :height="taheight" style="width: 100%;">
                     <el-table-column prop="username" label="姓名"></el-table-column>
                     <el-table-column prop="phone_number" label="手机号"></el-table-column>
                     <el-table-column prop="role_name" label="用户角色"></el-table-column>
@@ -14,7 +14,7 @@
                             <el-tag v-if="scope.row.status === 0" type="danger">禁用</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" width="180">
+                    <el-table-column align="center" label="操作" width="180">
                         <template slot-scope="scope">
                             <el-button size="small" @click="editUserAdmin(scope.row)">编辑</el-button>
                             <el-button size="small" @click="deleteAdminUser(scope.row,scope.$index)" type="danger">

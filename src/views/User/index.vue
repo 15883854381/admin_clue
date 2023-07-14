@@ -1,7 +1,7 @@
 <template>
     <Content>
         <div style="width: 100%">
-            <el-table :data="tableData" :height="taheight" style="width: 100%;">
+            <el-table size="mini" :data="tableData" :height="taheight" style="width: 100%;">
                 <el-table-column prop="nickname" show-overflow-tooltip label="微信昵称" width="180"></el-table-column>
                 <el-table-column prop="name" label="微信头像" width="180">
                     <template slot-scope="scope">
@@ -31,9 +31,9 @@
                 </el-table-column>
                 <el-table-column prop="notes_name" label="备注名称"></el-table-column>
                 <el-table-column prop="enroll_time" show-overflow-tooltip label="注册时间"></el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
-                        <el-button @click="EditUserFlasBtn(scope.row,scope.$index)">审核信息</el-button>
+                        <el-button size="small" @click="EditUserFlasBtn(scope.row,scope.$index)">审核信息</el-button>
                     </template>
                 </el-table-column>
             </el-table>

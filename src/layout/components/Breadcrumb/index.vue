@@ -1,7 +1,7 @@
 <template>
     <div class="body">
         <div>
-            <el-menu router class="el-menu-vertical-demo" background-color="#304156" unique-opened text-color="#BFCBD9"
+            <el-menu router class="el-menu-vertical-demo"  unique-opened text-color="#1d2129"
                      :default-active="defaultActive" style="height:100vh" :collapse="isCollapse">
                 <template v-for="(item, index) in store.state.login.navlist">
                     <el-submenu :index="index + 1 + ''" v-if="!item.hidden && item.meta !== undefined" :key="index">
@@ -14,7 +14,7 @@
                             {{ children.meta.title }}
                         </el-menu-item>
                     </el-submenu>
-                    <el-menu-item v-else-if="!item.hidden" :index="resolvePath(item.path, item.children[0].path)"
+                    <el-menu-item  v-else-if="!item.hidden" :index="resolvePath(item.path, item.children[0].path)"
                                   :key="index + '1'">
                         <i :class="item.children[0].meta.icon"></i>
                         <span slot="title">{{ item.children[0].meta.title }}</span>
@@ -131,6 +131,9 @@ export default {
   width: 24px;
   text-align: center;
   font-size: 18px;
+}
+.el-menu-item.is-active{
+    background-color: #ecf5ff;
 }
 
 </style>

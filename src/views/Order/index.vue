@@ -2,9 +2,9 @@
     <div>
         <Content>
             <div>
-                <el-form :inline="true" ref="form" label-width="80px">
+                <el-form :inline="true" size="mini" ref="form" label-width="80px">
                     <el-form-item>
-                        <el-input v-model="where.order_number" clearable placeholder="商户订单号、微信订单号"></el-input>
+                        <el-input  v-model="where.order_number" clearable placeholder="商户订单号、微信订单号"></el-input>
                     </el-form-item>
 
                     <el-form-item>
@@ -31,7 +31,7 @@
 
             </div>
             <div style="width: 100%">
-                <el-table @row-click="getorderitem" :data="new_order_flag" :height="taheight" style="width: 100%;">
+                <el-table size="mini" @row-click="getorderitem" :data="new_order_flag" :height="taheight" style="width: 100%;">
                     <el-table-column prop="nickname" width="100" show-overflow-tooltip
                                      label="购买者昵称"></el-table-column>
                     <el-table-column prop="phone_number" width="150" label="购买者手机"></el-table-column>
